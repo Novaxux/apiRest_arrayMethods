@@ -12,7 +12,7 @@ router.post(
   productsController.createProduct
 );
 router.delete("/products/:id", productsController.deleteProduct);
-router.put(
+router.patch(
   "/products/:id",
   validate(productSchema,true),
   productsController.updateProduct
