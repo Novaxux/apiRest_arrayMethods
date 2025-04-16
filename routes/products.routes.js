@@ -14,7 +14,7 @@ router.post(
 router.delete("/products/:id", productsController.deleteProduct);
 router.put(
   "/products/:id",
-  validate(productSchema),
+  validate(productSchema,true),
   productsController.updateProduct
 );
 

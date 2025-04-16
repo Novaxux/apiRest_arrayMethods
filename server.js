@@ -5,6 +5,7 @@ const productRoutes = require("./routes/products.routes");
 const homeRoutes = require("./routes/home.routes");
 const logRequests = require("./middleware/logRequests");
 // settings
+app.disable("x-powered-by");
 app.set("port", 3002);
 // matters uppercase and lowercase in routing
 app.set("case sensitive routing", true);
