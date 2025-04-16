@@ -1,12 +1,10 @@
+// const validateProduct = require("../schemas/product.schema");
+const crypto = require("crypto");
 let products = [
   { id: 1, name: "apple" },
   { id: 2, name: "orange" },
   { id: 3, name: "watermelon" },
 ];
-
-// const getHome = (req, res) => {
-//   res.sendFile("index.html", { root: __dirname });
-// };
 
 const getProducts = (req, res) => {
   res.json(products);
@@ -21,13 +19,9 @@ const getProductById = (req, res) => {
 };
 
 const createProduct = (req, res) => {
-  let id = 1;
-  while (products.find((p) => p.id === id)) {
-    id++;
-  }
-  const productObject = { id, ...req.body };
+  const productObject = { id: crypto.randomUUID(), ...req.validatedData };
   products.push(productObject);
-  res.send(productObject);
+  res.status(201).send(productObject);
 };
 
 const deleteProduct = (req, res) => {
@@ -42,13 +36,13 @@ const deleteProduct = (req, res) => {
 
 const updateProduct = (req, res) => {
   const productId = parseInt(req.params.id);
-  const newData = req.body;
+
   const product = products.find((p) => p.id === productId);
   if (!product) {
     return res.status(404).json({ message: "product not found" });
   }
   products = products.map((p) =>
-    p.id === productId ? { ...p, ...newData } : p
+    p.id === productId ? { ...p, ...req.validatedData } : p
   );
   res.json({ message: "product updated" });
 };
