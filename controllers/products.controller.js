@@ -1,10 +1,6 @@
 // const validateProduct = require("../schemas/product.schema");
 const crypto = require("crypto");
-let products = [
-  { id: crypto.randomUUID(), name: "apple" },
-  { id: crypto.randomUUID(), name: "orange" },
-  { id: crypto.randomUUID(), name: "watermelon" },
-];
+let products = require("../products");
 
 const getProducts = (req, res) => {
   res.json(products);

@@ -1,3 +1,181 @@
-body{
-    background-color: aqua;
-}
+/* Estilos principales - style.css */
+:root {
+    --primary-color: #6366f1;
+    --secondary-color: #4f46e5;
+    --accent-color: #a855f7;
+    --background-color: #f8fafc;
+    --text-color: #1e293b;
+    --card-bg: #ffffff;
+    --error-color: #ef4444;
+    --success-color: #10b981;
+    --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --transition: all 0.3s ease;
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  h1 {
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2.5rem;
+    font-weight: 700;
+    position: relative;
+    padding-bottom: 0.5rem;
+  }
+  
+  h1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+    border-radius: 2px;
+  }
+  
+  button {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+    display: block;
+    margin: 0 auto 2rem;
+    box-shadow: var(--shadow);
+  }
+  
+  button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 20px -5px rgba(99, 102, 241, 0.4);
+  }
+  
+  button:active {
+    transform: translateY(1px);
+  }
+  
+  #product_section {
+    margin-top: 2rem;
+  }
+  
+  #productContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  /* Centro el contenedor de productos cuando contiene el mensaje de error */
+  #productContainer:has(.error-message) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .product {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    border-left: 4px solid var(--primary-color);
+  }
+  
+  .product:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+  
+  .product h3 {
+    color: var(--primary-color);
+    margin-bottom: 0.8rem;
+    font-size: 1.2rem;
+  }
+  
+  .product p {
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+  }
+  
+  .product p:last-child {
+    margin-bottom: 0;
+  }
+  
+  /* Animación de carga */
+  @keyframes pulse {
+    0% {
+      opacity: 0.6;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.6;
+    }
+  }
+  
+  .loading {
+    animation: pulse 1.5s infinite;
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.2rem;
+    color: var(--primary-color);
+  }
+  
+  /* Estilo para error mejorado y centrado */
+  .error-message {
+    color: var(--error-color);
+    text-align: center;
+    padding: 1.5rem;
+    background-color: rgba(239, 68, 68, 0.1);
+    border-radius: 8px;
+    margin: 2rem auto;
+    border-left: 4px solid var(--error-color);
+    max-width: 500px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    body {
+      padding: 1rem;
+    }
+    
+    h1 {
+      font-size: 2rem;
+    }
+    
+    #productContainer {
+      grid-template-columns: 1fr;
+    }
+    
+    .error-message {
+      margin: 1rem auto;
+      padding: 1rem;
+    }
+  }
