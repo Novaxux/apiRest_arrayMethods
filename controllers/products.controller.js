@@ -1,4 +1,3 @@
-// const validateProduct = require("../schemas/product.schema");
 const crypto = require("crypto");
 let products = require("../products");
 
@@ -22,7 +21,6 @@ const createProduct = (req, res) => {
 };
 
 const deleteProduct = (req, res) => {
-  // const productId = parseInt(req.params.id);
   const productId = req.params.id;
   const product = products.find((p) => p.id === productId);
   if (!product) {
@@ -33,7 +31,6 @@ const deleteProduct = (req, res) => {
 };
 
 const updateProduct = (req, res) => {
-  // const productId = parseInt(req.params.id);
   const productId = req.params.id;
 
   const product = products.find((p) => p.id === productId);
