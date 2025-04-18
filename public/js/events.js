@@ -1,5 +1,9 @@
 import { loadProducts } from "./api.js";
 import { deleteProduct } from "./api.js";
+import { productCard } from "./product_card.js";
+
+// Variable global para rastrear qué producto se está eliminando
+let productToDelete = null;
 
 document.getElementById("loadProducts").addEventListener("click", async () => {
   const productContainer = document.getElementById("productContainer");
@@ -13,14 +17,7 @@ document.getElementById("loadProducts").addEventListener("click", async () => {
     loadingIndicator.style.display = "none";
 
     products.forEach((product) => {
-      productContainer.innerHTML += `
-            <div class="product">
-              <h3>${product.name}</h3>
-              <p>Precio: $${product.price}</p>
-              <p>Stock: ${product.stock}</p>
-              <button onclick="handleDelete('${product.id}')">delete</button>
-            </div>
-          `;
+      productContainer.innerHTML += productCard(product);
     });
   } catch (error) {
     loadingIndicator.style.display = "none";
@@ -29,11 +26,30 @@ document.getElementById("loadProducts").addEventListener("click", async () => {
     console.error(error);
   }
 });
-window.handleDelete = async function (id) {
-  try {
-    await deleteProduct(id);
-    document.getElementById("loadProducts").click(); // o actualizar la lista
-  } catch (err) {
-    console.error("Error al eliminar:", err);
-  }
+const deleteDialog = document.getElementById("deleteModal");
+
+// Cerrar el diálogo con el botón de cierre
+document.getElementById("closeDialog").addEventListener("click", () => {
+  deleteDialog.close();
+});
+
+// Cerrar el diálogo con el botón cancelar
+document.getElementById("cancelDelete").addEventListener("click", () => {
+  deleteDialog.close();
+});
+
+window.openDeleteModal = function (productId) {
+  productToDelete = productId;
+  deleteDialog.showModal();
 };
+// Manejar la confirmación de eliminación
+document.getElementById("confirmDelete").addEventListener("click", async () => {
+  try {
+    await deleteProduct(productToDelete);
+    document.getElementById(productToDelete).remove();
+  } catch (error) {
+    console.error("Error al eliminar el producto:", error);
+  } finally {
+    deleteDialog.close();
+  }
+});

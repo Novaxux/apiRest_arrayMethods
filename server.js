@@ -5,7 +5,6 @@ const productRoutes = require("./routes/products.routes");
 const homeRoutes = require("./routes/home.routes");
 const logRequests = require("./middleware/logRequests");
 const cors = require("cors");
-const { Server } = require("http");
 // matters uppercase and lowercase in routing
 app.set("case sensitive routing", true);
 // middleware
