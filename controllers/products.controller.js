@@ -9,9 +9,7 @@ const getProductById = (req, res) => {
   // const productId = parseInt(req.params.id);
   const productId = req.params.id;
   const product = products.find((p) => p.id === productId);
-  product
-    ? res.json(product)
-    : res.status(404).json({ message: "product not found" });
+  product ? res.json(product) : res.status(404).send();
 };
 
 const createProduct = (req, res) => {
@@ -24,10 +22,10 @@ const deleteProduct = (req, res) => {
   const productId = req.params.id;
   const product = products.find((p) => p.id === productId);
   if (!product) {
-    return res.status(404).json({ message: "product not found" });
+    return res.status(404).send();
   }
   products = products.filter((p) => p.id !== productId);
-  res.json({ message: "product deleted" });
+  res.status(204).send();
 };
 
 const updateProduct = (req, res) => {
@@ -35,12 +33,12 @@ const updateProduct = (req, res) => {
 
   const product = products.find((p) => p.id === productId);
   if (!product) {
-    return res.status(404).json({ message: "product not found" });
+    return res.status(404);
   }
   products = products.map((p) =>
     p.id === productId ? { ...p, ...req.validatedData } : p
   );
-  res.json({ message: "product updated" });
+  res.status(200).send();
 };
 
 module.exports = {

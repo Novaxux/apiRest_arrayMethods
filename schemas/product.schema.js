@@ -6,6 +6,8 @@ const productSchema = z.object({
       invalid_type_error: "Product name must be a string",
       required_error: "Product name is required",
     })
+    .trim()
+    .regex(/^[a-zA-Z]+$/, "Product name must contain only letters") 
     .min(1)
     .max(20)
     .toLowerCase(),

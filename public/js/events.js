@@ -50,22 +50,23 @@ window.openModal = function (productId, modalIndex) {
 
 function confirmEvent(index, once_) {
   const id = modalConfirmIds[index];
-  console.log(id);
   document.getElementById(id).addEventListener(
     "click",
     async () => {
       try {
         let data;
         if (index == 0) {
-          document.getElementById(productToChange).remove();
           data = await apiRequests[index](productToChange);
+          document.getElementById(productToChange).remove();
+          
         }
         if (index == 1) {
-          data = await apiRequests[index]({});
+          const params = extractEditInfo();
+          data = await apiRequests[index](params);
         }
         if (data) console.log(data);
       } catch (error) {
-        console.error(error);
+        console.log(error);
       } finally {
         dialog.close();
       }
@@ -75,9 +76,22 @@ function confirmEvent(index, once_) {
 }
 
 function extractEditInfo() {
-  const pName = document.getElementById("productName");
-  const pStock = document.getElementById("productStock");
-  const pPrice = document.getElementById("productPrice");
+  const pName = document.getElementById("productName").value;
+  const pStock = parseInt(document.getElementById("productStock").value);
+  const pPrice = parseInt(document.getElementById("productPrice").value);
 
-  return { name: pName, stock: pStock, price: pPrice, id: productToChange };
+  const updatedData = {};
+
+  if (pName) {
+    updatedData.name = pName;
+  }
+  if (pStock) {
+    updatedData.stock = pStock;
+  }
+  if (pPrice) {
+    updatedData.price = pPrice;
+  }
+  updatedData.id = productToChange;
+
+  return updatedData;
 }
