@@ -7,7 +7,7 @@ export async function loadProducts() {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.log(error);
+    throw error;
   }
 }
 export async function deleteProduct(id) {
@@ -23,12 +23,9 @@ export async function deleteProduct(id) {
   } catch (error) {
     throw error;
   }
-  finally{
-    console.log('puto')
-  }
 }
 
-export async function editProduct(params) {
+export async function editProduct(id) {
   fetch("https://jsonplaceholder.typicode.com/posts/1", {
     method: "PATCH",
     body: JSON.stringify({

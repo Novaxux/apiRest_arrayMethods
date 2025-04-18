@@ -10,26 +10,13 @@
     <h1>Hello world</h1>
     <button id="loadProducts">Load products</button>
     <section id="product_section">
-      <div id="loadingIndicator" class="loading" style="display: none;">
-        Cargando productos...
-      </div>  
+      <div id="loadingIndicator" class="loading" style="display: none">
+        Loading productos...
+      </div>
       <div id="productContainer"></div>
     </section>
-    <dialog id="deleteModal" class="modal-dialog">
-      <div class="dialog-content">
-        <div class="dialog-header">
-          <h2>Confirm elimination</h2>
-          <button type="button" class="close-button" id="closeDialog">&times;</button>
-        </div>
-        <div class="dialog-body">
-          <p>Are you sure you want to eliminate this product?</p>
-        </div>
-        <div class="dialog-footer">
-          <button id="cancelDelete" class="button-secondary">Cancel</button>
-          <button id="confirmDelete" class="button-danger">Eliminate</button>
-        </div>
-      </div>
+    <dialog id="dialog" class="modal-dialog">
     </dialog>
-  <script src="public/js/events.js" type="module"></script>
+    <script src="public/js/events.js" type="module"></script>
   </body>
 </html>
