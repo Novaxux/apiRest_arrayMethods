@@ -3,11 +3,12 @@ import { deleteProduct } from "./api.js";
 import { productCard } from "./product_card.js";
 import { deleteModal } from "./deleteModal.js";
 import { editModal } from "./editModal.js";
+import { editProduct } from "./api.js";
 // Variable global para rastrear qué producto se está eliminando
 let productToChange = null;
 const modals = [deleteModal, editModal];
-const apiRequests = [deleteProduct, loadProducts];
-const modalConfirmIds = ["confirmDelete"];
+const apiRequests = [deleteProduct, editProduct];
+const modalConfirmIds = ["confirmDelete", "saveEdit"];
 
 document.getElementById("loadProducts").addEventListener("click", async () => {
   const productContainer = document.getElementById("productContainer");
@@ -49,13 +50,19 @@ window.openModal = function (productId, modalIndex) {
 
 function confirmEvent(index, once_) {
   const id = modalConfirmIds[index];
-  // console.log(id);
+  console.log(id);
   document.getElementById(id).addEventListener(
     "click",
     async () => {
       try {
-        const data = await apiRequests[index](productToChange);
-        if (index == 0) document.getElementById(productToChange).remove();
+        let data;
+        if (index == 0) {
+          document.getElementById(productToChange).remove();
+          data = await apiRequests[index](productToChange);
+        }
+        if (index == 1) {
+          data = await apiRequests[index]({});
+        }
         if (data) console.log(data);
       } catch (error) {
         console.error(error);
@@ -65,4 +72,12 @@ function confirmEvent(index, once_) {
     },
     { once: once_ }
   );
+}
+
+function extractEditInfo() {
+  const pName = document.getElementById("productName");
+  const pStock = document.getElementById("productStock");
+  const pPrice = document.getElementById("productPrice");
+
+  return { name: pName, stock: pStock, price: pPrice, id: productToChange };
 }

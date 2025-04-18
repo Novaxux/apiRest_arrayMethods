@@ -25,16 +25,25 @@ export async function deleteProduct(id) {
   }
 }
 
-export async function editProduct(id) {
-  fetch("https://jsonplaceholder.typicode.com/posts/1", {
-    method: "PATCH",
-    body: JSON.stringify({
-      title: "foo",
-    }),
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-    },
-  })
-    .then((response) => response.json())
-    .then((json) => console.log(json));
+export async function editProduct(params) {
+  try {
+    const response = await fetch(
+      `http://localhost:3002/products/${params.id}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({
+          name: params.name,
+          price: parseInt(params.price),
+          stock: parseInt(params.stock),
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      }
+    );
+    const data = response.json();
+    console.log(data);
+  } catch (error) {
+    throw error;
+  }
 }
