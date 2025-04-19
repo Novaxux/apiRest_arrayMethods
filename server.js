@@ -20,6 +20,6 @@ app.use(homeRoutes);
 // static files
 app.use("/public", express.static(path.join(__dirname, "public")));
 // server
-app.listen(app.get("port"), () =>
+app.listen(app.get("port"), "0.0.0.0", () =>
   console.log(`Servidor en http://localhost:${app.get("port")}`)
 );

@@ -8,7 +8,15 @@
   </head>
   <body>
     <h1>Product inventory</h1>
-    <button id="loadProducts">Load products</button>
+    <button id="loadProducts">Load products</button> 
+    <div class="search-container">
+      <form class="search-form" id="search-form">
+        <div class="form-group">
+          <input type="text" class="form-input" id="searchInput" placeholder="Search..." />
+        </div>
+        <button type="submit" class="button-primary">Search</button>
+      </form>
+    </div>
     <section id="product_section">
       <div id="loadingIndicator" class="loading" style="display: none">
         Loading products...
