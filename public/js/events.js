@@ -1,19 +1,18 @@
-// import { loadProducts } from "./api.js";
-// import { deleteProduct } from "./api.js";
 import { productCard } from "./product_card.js";
 import { deleteModal } from "./deleteModal.js";
 import { editModal } from "./editModal.js";
-// import { editProduct } from "./api.js";
-// import { getProduct } from "./api.js";
+import { addProductModal } from "./addProductModal.js";
 import { api } from "./api.js";
 // Variable global para rastrear qué producto se está eliminando
 let productToChange = null;
-const modals = [deleteModal, editModal];
+const modals = [deleteModal, editModal, addProductModal];
 const apiRequests = [api.deleteProduct, api.editProduct];
 const modalConfirmIds = ["confirmDelete", "saveEdit"];
 
 const productContainer = document.getElementById("productContainer");
 const loadingIndicator = document.getElementById("loadingIndicator");
+const dialog = document.getElementById("dialog");
+
 document.getElementById("loadProducts").addEventListener("click", async () => {
   productContainer.innerHTML = "";
   loadingIndicator.style.display = "block";
@@ -30,10 +29,27 @@ document.getElementById("loadProducts").addEventListener("click", async () => {
   }
 });
 
+// add product event
+document.getElementById("addProduct").addEventListener("click", () => {
+  dialog.innerHTML = addProductModal();
+  dialog.showModal();
+  document.getElementById("addProductForm").addEventListener(
+    "submit",
+    (e) => {
+      e.preventDefault();
+      console.log(extractAddInfo());
+    },
+    { once: true }
+  );
+  closeModalEvent();
+});
 document.getElementById("search-form").addEventListener("submit", async (e) => {
   e.preventDefault();
   try {
     const searchId = document.getElementById("searchInput").value.trim();
+    if (searchId === "") {
+      throw new Error("Input must contain something");
+    }
     const product = await api.getProduct(searchId);
     productContainer.innerHTML = productCard(product);
     document.getElementById("searchInput").value = "";
@@ -42,15 +58,8 @@ document.getElementById("search-form").addEventListener("submit", async (e) => {
   }
 });
 
-const dialog = document.getElementById("dialog");
-
 function asignateEvents(index) {
-  const closeBtn = document.getElementById("closeDialog");
-  if (closeBtn) closeBtn.addEventListener("click", () => dialog.close());
-
-  const cancelBtn = document.getElementById("cancel");
-  if (cancelBtn) cancelBtn.addEventListener("click", () => dialog.close());
-
+  closeModalEvent();
   confirmEvent(index, true);
 }
 
@@ -99,7 +108,7 @@ function updateProductTags(params) {
 function extractEditInfo() {
   const pName = document.getElementById("productName").value.toLowerCase();
   const pStock = parseInt(document.getElementById("productStock").value);
-  const pPrice = parseInt(document.getElementById("productPrice").value);
+  const pPrice = Number(document.getElementById("productPrice").value);
 
   const updatedData = {};
 
@@ -115,4 +124,26 @@ function extractEditInfo() {
   updatedData.id = productToChange;
 
   return updatedData;
+}
+
+function extractAddInfo() {
+  const pName = document.getElementById("productName").value.toLowerCase();
+  const pStock = parseInt(document.getElementById("productStock").value);
+  const pPrice = Number(document.getElementById("productPrice").value);
+
+  return {
+    name: pName,
+    stock: pStock,
+    price: pPrice,
+  };
+}
+
+function closeModalEvent() {
+  const closeBtn = document.getElementById("closeDialog");
+  if (closeBtn)
+    closeBtn.addEventListener("click", () => dialog.close(), { once: true });
+
+  const cancelBtn = document.getElementById("cancel");
+  if (cancelBtn)
+    cancelBtn.addEventListener("click", () => dialog.close(), { once: true });
 }

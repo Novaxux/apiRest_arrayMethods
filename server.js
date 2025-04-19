@@ -10,7 +10,7 @@ app.set("case sensitive routing", true);
 // middleware
 app.use(logRequests);
 app.use(express.json());
-app.use(cors());
+app.use(cors());  
 // settings
 app.disable("x-powered-by");
 app.set("port", 3002);
