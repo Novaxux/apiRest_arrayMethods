@@ -18,7 +18,7 @@
 
 /* Base styles */
 * {
-  margin: 0;  
+  margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -456,4 +456,36 @@ label {
 .search-form button {
   height: 100%;
   margin: 0;
+}
+
+/* alert */
+.alert-dialog {
+  position: fixed;
+  top: 20px;
+  right: -100%;
+  width: 300px;
+  background-color: #fff;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transition: right 0.5s ease-out, opacity 0.5s ease-out;
+  opacity: 0;
+  padding: 0;
+  z-index: 2000;
+}
+.alert-dialog.show {
+  right: 20px;
+  opacity: 1;
+}
+
+.dialog-content {
+  padding: 16px;
+}
+
+.dialog-header h2 {
+  margin: 0;
+}
+
+.dialog-body p {
+  margin-top: 8px;
 }

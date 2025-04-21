@@ -1,33 +1,26 @@
 import { productCard } from "./product_card.js";
 import { deleteModal } from "./deleteModal.js";
 import { editModal } from "./editModal.js";
+import { alertModal } from "./alertModal.js";
 import { addProductModal } from "./addProductModal.js";
 import { api } from "./api.js";
 // Variable global para rastrear qué producto se está eliminando
 let productToChange = null;
-const modals = [deleteModal, editModal, addProductModal];
+const modals = [deleteModal, editModal];
 const apiRequests = [api.deleteProduct, api.editProduct];
 const modalConfirmIds = ["confirmDelete", "saveEdit"];
 
 const productContainer = document.getElementById("productContainer");
 const loadingIndicator = document.getElementById("loadingIndicator");
 const dialog = document.getElementById("dialog");
+// const alert = document.getElementById("alert");
 
-document.getElementById("loadProducts").addEventListener("click", async () => {
-  productContainer.innerHTML = "";
-  loadingIndicator.style.display = "block";
-
-  try {
-    const products = await api.loadProducts();
-    loadingIndicator.style.display = "none";
-
-    products.forEach((product) => {
-      productContainer.innerHTML += productCard(product);
-    });
-  } catch (error) {
-    console.error(error);
-  }
+window.addEventListener("DOMContentLoaded", async () => {
+  await GenerateAllProductCards();
 });
+// document.getElementById("loadProducts").addEventListener("click", async () => {
+//   GenerateAllProductCards();
+// });
 
 // add product event
 document.getElementById("addProduct").addEventListener("click", () => {
@@ -35,9 +28,17 @@ document.getElementById("addProduct").addEventListener("click", () => {
   dialog.showModal();
   document.getElementById("addProductForm").addEventListener(
     "submit",
-    (e) => {
+    async (e) => {
       e.preventDefault();
-      console.log(extractAddInfo());
+      try {
+        const params = extractAddInfo();
+        const productInfo = await api.postProduct(params);
+        productContainer.innerHTML += productCard(productInfo);
+      } catch (error) {
+        showAlert(JSON.parse(error.message));
+      } finally {
+        dialog.close();
+      }
     },
     { once: true }
   );
@@ -48,13 +49,14 @@ document.getElementById("search-form").addEventListener("submit", async (e) => {
   try {
     const searchId = document.getElementById("searchInput").value.trim();
     if (searchId === "") {
-      throw new Error("Input must contain something");
+      await GenerateAllProductCards();
+    } else {
+      const product = await api.getProduct(searchId);
+      productContainer.innerHTML = productCard(product);
     }
-    const product = await api.getProduct(searchId);
-    productContainer.innerHTML = productCard(product);
     document.getElementById("searchInput").value = "";
   } catch (error) {
-    console.log(error);
+    showAlert(JSON.parse(error.message));
   }
 });
 
@@ -87,8 +89,9 @@ function confirmEvent(index, once_) {
           updateProductTags(params);
         }
         if (data) console.log(data);
+        // dialog.close();
       } catch (error) {
-        console.log(error);
+        showAlert(JSON.parse(error.message));
       } finally {
         dialog.close();
       }
@@ -106,7 +109,10 @@ function updateProductTags(params) {
   if (params.stock !== undefined) stockTag.innerHTML = params.stock;
 }
 function extractEditInfo() {
-  const pName = document.getElementById("productName").value.toLowerCase();
+  const pName = document
+    .getElementById("productName")
+    .value.toLowerCase()
+    .replace(/\s+/g, "");
   const pStock = parseInt(document.getElementById("productStock").value);
   const pPrice = Number(document.getElementById("productPrice").value);
 
@@ -127,7 +133,10 @@ function extractEditInfo() {
 }
 
 function extractAddInfo() {
-  const pName = document.getElementById("productName").value.toLowerCase();
+  const pName = document
+    .getElementById("productName")
+    .value.trim()
+    .toLowerCase();
   const pStock = parseInt(document.getElementById("productStock").value);
   const pPrice = Number(document.getElementById("productPrice").value);
 
@@ -147,3 +156,33 @@ function closeModalEvent() {
   if (cancelBtn)
     cancelBtn.addEventListener("click", () => dialog.close(), { once: true });
 }
+
+async function GenerateAllProductCards() {
+  productContainer.innerHTML = "";
+  loadingIndicator.style.display = "block";
+  try {
+    const products = await api.loadProducts();
+    loadingIndicator.style.display = "none";
+
+    products.forEach((product) => {
+      productContainer.innerHTML += productCard(product);
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+const showAlert = (message) => {
+  const alertDialog = document.getElementById("alert");
+  alertDialog.innerHTML = alertModal(message);
+
+  alertDialog.classList.add("show");
+  alertDialog.open = true;
+
+  setTimeout(() => {
+    alertDialog.classList.remove("show");
+    setTimeout(() => {
+      alertDialog.close();
+    }, 500);
+  }, 3000);
+};

@@ -22,7 +22,12 @@ class ApiCalls {
         method: "DELETE",
       });
       if (!response.ok) {
-        throw new Error("Error to delete product status: " + response.status);
+        throw new Error(
+          JSON.stringify({
+            header: "status " + response.status,
+            body: "Product to delete not found",
+          })
+        );
       }
       return `Product with id: ${id} successfully deleted`;
     } catch (error) {
@@ -40,10 +45,21 @@ class ApiCalls {
         },
       });
       if (!response.ok) {
-        if (response.status === 404) throw new Error("Product not found");
+        if (response.status === 404)
+          throw new Error(
+            JSON.stringify({
+              header: "status " + response.status,
+              body: "Product to edit not found",
+            })
+          );
         if (response.status === 400) {
           const error = await response.json();
-          throw new Error(JSON.stringify(error.errors));
+          throw new Error(
+            JSON.stringify({
+              header: "Invalid format",
+              body: JSON.stringify(error.errors.fieldErrors ),
+            })
+          );
         }
       }
     } catch (error) {
@@ -55,7 +71,36 @@ class ApiCalls {
     try {
       const response = await fetch(`${this.baseUrl}/products/${id}`);
       if (!response.ok) {
-        throw new Error("Product not found");
+        throw new Error(
+          JSON.stringify({
+            header: "status " + response.status,
+            body: `Product with id:${id} not found`,
+          })
+        );
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  };
+  postProduct = async (params) => {
+    try {
+      const response = await fetch(`${this.baseUrl}/products`, {
+        method: "POST",
+        body: JSON.stringify(params),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(
+          JSON.stringify({
+            header: "Invalid format",
+            body: JSON.stringify(error.errors),
+          })
+        );
       }
       const data = await response.json();
       return data;
