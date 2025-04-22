@@ -3,7 +3,7 @@ class ApiCalls {
     this.baseUrl = `http://${ip}:${port}`;
   }
 
-  loadProducts = async () => {
+  getAllProducts = async () => {
     try {
       const response = await fetch(`${this.baseUrl}/products`);
       if (!response.ok) {
@@ -29,7 +29,10 @@ class ApiCalls {
           })
         );
       }
-      return `Product with id: ${id} successfully deleted`;
+      return {
+        header: "Succes",
+        body: `Product with id: ${id} successfully deleted`,
+      };
     } catch (error) {
       throw error;
     }
@@ -57,11 +60,12 @@ class ApiCalls {
           throw new Error(
             JSON.stringify({
               header: "Invalid format",
-              body: JSON.stringify(error.errors.fieldErrors ),
+              body: JSON.stringify(error.errors.fieldErrors),
             })
           );
         }
       }
+      return {header: 'Succes', body:`Product wit id:${params.id} edited`}
     } catch (error) {
       throw error;
     }

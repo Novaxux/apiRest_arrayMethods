@@ -6,6 +6,7 @@ import { addProductModal } from "./addProductModal.js";
 import { api } from "./api.js";
 // Variable global para rastrear qué producto se está eliminando
 let productToChange = null;
+
 const modals = [deleteModal, editModal];
 const apiRequests = [api.deleteProduct, api.editProduct];
 const modalConfirmIds = ["confirmDelete", "saveEdit"];
@@ -13,14 +14,10 @@ const modalConfirmIds = ["confirmDelete", "saveEdit"];
 const productContainer = document.getElementById("productContainer");
 const loadingIndicator = document.getElementById("loadingIndicator");
 const dialog = document.getElementById("dialog");
-// const alert = document.getElementById("alert");
 
 window.addEventListener("DOMContentLoaded", async () => {
   await GenerateAllProductCards();
 });
-// document.getElementById("loadProducts").addEventListener("click", async () => {
-//   GenerateAllProductCards();
-// });
 
 // add product event
 document.getElementById("addProduct").addEventListener("click", () => {
@@ -31,7 +28,7 @@ document.getElementById("addProduct").addEventListener("click", () => {
     async (e) => {
       e.preventDefault();
       try {
-        const params = extractAddInfo();
+        const params = extractProductData();
         const productInfo = await api.postProduct(params);
         productContainer.innerHTML += productCard(productInfo);
       } catch (error) {
@@ -84,11 +81,11 @@ function confirmEvent(index, once_) {
           document.getElementById(productToChange).remove();
         }
         if (index == 1) {
-          const params = extractEditInfo();
+          const params = extractProductData(true);
           data = await apiRequests[index](params);
           updateProductTags(params);
         }
-        if (data) console.log(data);
+        if (data) showAlert(data);
         // dialog.close();
       } catch (error) {
         showAlert(JSON.parse(error.message));
@@ -108,45 +105,19 @@ function updateProductTags(params) {
   if (params.price !== undefined) priceTag.innerHTML = params.price;
   if (params.stock !== undefined) stockTag.innerHTML = params.stock;
 }
-function extractEditInfo() {
-  const pName = document
-    .getElementById("productName")
-    .value.toLowerCase()
-    .replace(/\s+/g, "");
-  const pStock = parseInt(document.getElementById("productStock").value);
-  const pPrice = Number(document.getElementById("productPrice").value);
+function extractProductData(isEdit = false) {
+  const name = document.getElementById("productName").value.trim().toLowerCase();
+  const stock = parseInt(document.getElementById("productStock").value);
+  const price = Number(document.getElementById("productPrice").value);
 
-  const updatedData = {};
+  const data = {};
+  if (name) data.name = name;
+  if (stock) data.stock = stock;
+  if (price) data.price = price;
+  if (isEdit) data.id = productToChange;
 
-  if (pName) {
-    updatedData.name = pName;
-  }
-  if (pStock) {
-    updatedData.stock = pStock;
-  }
-  if (pPrice) {
-    updatedData.price = pPrice;
-  }
-  updatedData.id = productToChange;
-
-  return updatedData;
+  return data;
 }
-
-function extractAddInfo() {
-  const pName = document
-    .getElementById("productName")
-    .value.trim()
-    .toLowerCase();
-  const pStock = parseInt(document.getElementById("productStock").value);
-  const pPrice = Number(document.getElementById("productPrice").value);
-
-  return {
-    name: pName,
-    stock: pStock,
-    price: pPrice,
-  };
-}
-
 function closeModalEvent() {
   const closeBtn = document.getElementById("closeDialog");
   if (closeBtn)
@@ -160,13 +131,18 @@ function closeModalEvent() {
 async function GenerateAllProductCards() {
   productContainer.innerHTML = "";
   loadingIndicator.style.display = "block";
+
   try {
-    const products = await api.loadProducts();
+    const products = await api.getAllProducts();
     loadingIndicator.style.display = "none";
 
+    const fragment = document.createDocumentFragment();
     products.forEach((product) => {
-      productContainer.innerHTML += productCard(product);
+      const wrapper = document.createElement("div");
+      wrapper.innerHTML = productCard(product);
+      fragment.append(...wrapper.childNodes);
     });
+    productContainer.appendChild(fragment);
   } catch (error) {
     console.error(error);
   }
@@ -186,3 +162,5 @@ const showAlert = (message) => {
     }, 500);
   }, 3000);
 };
+
+// setInterval(GenerateAllProductCards, 10000);
