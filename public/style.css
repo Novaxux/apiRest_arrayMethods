@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Dosis:wght@200..800&display=swap');
 /* Simplified CSS with variables */
 :root {
   --primary-color: #6366f1;
@@ -21,7 +22,10 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Dosis", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
 }
 
 body {
@@ -144,6 +148,17 @@ button:active {
   background-color: rgba(239, 68, 68, 0.1);
   transform: none;
   box-shadow: none;
+}
+.add-btn {
+  padding: 0.6rem 1rem;
+  font-weight: bold;
+  border: none;
+  font-size: 1rem;
+}
+
+.icon {
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 
 /* Layout containers */
