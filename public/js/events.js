@@ -31,6 +31,7 @@ document.getElementById("addProduct").addEventListener("click", () => {
         const params = extractProductData();
         const productInfo = await api.postProduct(params);
         productContainer.innerHTML += productCard(productInfo);
+        showAlert({header:'Succes', body: 'Product Added'});
       } catch (error) {
         showAlert(JSON.parse(error.message));
       } finally {
@@ -106,7 +107,7 @@ function updateProductTags(params) {
   if (params.stock !== undefined) stockTag.innerHTML = params.stock;
 }
 function extractProductData(isEdit = false) {
-  const name = document.getElementById("productName").value.trim().toLowerCase();
+  const name = document.getElementById("productName").value.trim();
   const stock = parseInt(document.getElementById("productStock").value);
   const price = Number(document.getElementById("productPrice").value);
 

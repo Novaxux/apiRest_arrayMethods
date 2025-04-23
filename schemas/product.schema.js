@@ -7,10 +7,9 @@ const productSchema = z.object({
       required_error: "Product name is required",
     })
     .trim()
-    .regex(/^[a-zA-Z]+$/, "Product name must contain only letters") 
     .min(1)
-    .max(20)
-    .toLowerCase(),
+    .max(20),
+    // .toLowerCase(),
   price: z.number().positive({
     message: "Price must be a positive number",
   }),

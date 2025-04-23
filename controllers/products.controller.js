@@ -1,43 +1,74 @@
 const crypto = require("crypto");
-let products = require("../products");
+const pool = require("../models/product_model");
 
-const getProducts = (req, res) => {
-  res.json(products);
+const getProducts = async (req, res) => {
+  const [result] = await pool.query("SELECT * FROM products");
+  res.json(result);
 };
-
-const getProductById = (req, res) => {
-  // const productId = parseInt(req.params.id);
+const getProductById = async (req, res) => {
   const productId = req.params.id;
-  const product = products.find((p) => p.id === productId);
-  product ? res.json(product) : res.status(404).send();
+  const [product] = await pool.query(
+    `SELECT * FROM products WHERE id = ?`,
+    [productId]
+  );
+  if (product.length === 0) {
+    return res.status(404).send();
+  }
+  res.json(product[0]);
 };
 
-const createProduct = (req, res) => {
+const createProduct = async (req, res) => {
   const productObject = { id: crypto.randomUUID(), ...req.validatedData };
-  products.push(productObject);
+
+  await pool.query(
+    `INSERT INTO products (id, name, price, stock) VALUES (?, ?, ?, ?)`,
+    [
+      productObject.id,
+      productObject.name,
+      productObject.price,
+      productObject.stock,
+    ]
+  );
   res.status(201).send(productObject);
 };
 
-const deleteProduct = (req, res) => {
+const deleteProduct = async (req, res) => {
   const productId = req.params.id;
-  const product = products.find((p) => p.id === productId);
-  if (!product) {
+  const [result] = await pool.query(`DELETE FROM products WHERE id = ?`, [
+    productId,
+  ]);
+  if (result.affectedRows === 0) {
     return res.status(404).send();
   }
-  products = products.filter((p) => p.id !== productId);
-  res.status(204).send();
+  res.status(200).send();
 };
 
-const updateProduct = (req, res) => {
-  const productId = req.params.id;
-
-  const product = products.find((p) => p.id === productId);
-  if (!product) {
-    return res.status(404);
+const updateProduct = async (req, res) => {
+  const { id } = req.params;
+  const data = req.validatedData;
+  const fields = Object.keys(data)
+    .map((field) => `${field} = ?`)
+    .join(", ");
+  //implement this using zod
+  if (Object.keys(data).length === 0) {
+    return res.status(400).json({
+      errors: {
+        fieldErrors: [
+          {
+            general: ["No product changed"],
+          },
+        ],
+      },
+    });
   }
-  products = products.map((p) =>
-    p.id === productId ? { ...p, ...req.validatedData } : p
+  const values = Object.values(data);
+  const [result] = await pool.query(
+    `UPDATE products SET ${fields} WHERE id = ?`,
+    [...values, id]
   );
+  if (result.affectedRows === 0) {
+    return res.status(404).send();
+  }
   res.status(200).send();
 };
 
