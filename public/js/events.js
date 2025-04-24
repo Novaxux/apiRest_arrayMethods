@@ -31,7 +31,7 @@ document.getElementById("addProduct").addEventListener("click", () => {
         const params = extractProductData();
         const productInfo = await api.postProduct(params);
         productContainer.innerHTML += productCard(productInfo);
-        showAlert({header:'Succes', body: 'Product Added'});
+        showAlert({ header: "Succes", body: "Product Added" });
       } catch (error) {
         showAlert(JSON.parse(error.message));
       } finally {
@@ -138,11 +138,13 @@ async function GenerateAllProductCards() {
     loadingIndicator.style.display = "none";
 
     const fragment = document.createDocumentFragment();
+    const template = document.createElement("template");
+
     products.forEach((product) => {
-      const wrapper = document.createElement("div");
-      wrapper.innerHTML = productCard(product);
-      fragment.append(...wrapper.childNodes);
+      template.innerHTML = productCard(product);
+      fragment.appendChild(template.content.firstElementChild);
     });
+
     productContainer.appendChild(fragment);
   } catch (error) {
     console.error(error);

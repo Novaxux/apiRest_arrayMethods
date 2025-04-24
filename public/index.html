@@ -34,13 +34,31 @@
       <div id="loadingIndicator" class="loading" style="display: none">
         Loading products...
       </div>
-      <div class="table-header">
-        <div class="table-header-item">Name</div>
-        <div class="table-header-item">Price</div>
-        <div class="table-header-item">Stock</div>
-        <div class="table-header-item">Actions</div>
-      </div>
-      <div id="productContainer"></div>
+      <table class="product-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="productContainer">
+          <tr id="16080cb5-04c4-4064-acae-bf3d35f9f1de">
+            <td id="name16080cb5-04c4-4064-acae-bf3d35f9f1de">juan</td>
+            <td>$<span id="price16080cb5-04c4-4064-acae-bf3d35f9f1de">23.00</span></td>
+            <td><span id="stock16080cb5-04c4-4064-acae-bf3d35f9f1de">123</span> units</td>
+            <td>
+              <button class="action-button edit-button" onclick="openModal('16080cb5-04c4-4064-acae-bf3d35f9f1de',1)" aria-label="Edit product">
+                ✏️
+              </button>
+              <button class="action-button delete-button" onclick="openModal('16080cb5-04c4-4064-acae-bf3d35f9f1de',0)" aria-label="Delete product">
+                🗑️
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </section>
     <dialog id="dialog" class="modal-dialog"></dialog>
     <dialog id="alert" class="alert-dialog"></dialog>
