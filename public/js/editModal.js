@@ -9,18 +9,18 @@ export const editModal = () => {
         <form id="editProductForm">
           <div class="form-group">
             <label for="productName">Name:</label>
-            <input type="text" id="productName" name="name" class="form-input" required>
+            <input type="text" id="productName" placeholder="optional" name="name" class="form-input" required>
           </div>
           <div class="form-group">
             <label for="productPrice">Price:</label>
             <div class="price-input-wrapper">
               <span class="currency-symbol">$</span>
-              <input type="number" id="productPrice" name="price" step="0.01" min="0" class="form-input" required>
+              <input type="number" id="productPrice" placeholder="optional" name="price" step="0.01" min="0" class="form-input" required>
             </div>
           </div>
           <div class="form-group">
             <label for="productStock">Stock:</label>
-            <input type="number" id="productStock" name="stock" min="0" class="form-input" required>
+            <input type="number" id="productStock" placeholder="optional" name="stock" min="0" class="form-input" required>
           </div>
           <input type="hidden" id="productId">
         </form>

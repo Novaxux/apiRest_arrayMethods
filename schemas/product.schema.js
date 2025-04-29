@@ -8,8 +8,7 @@ const productSchema = z.object({
     })
     .trim()
     .min(1)
-    .max(20),
-    // .toLowerCase(),
+    .max(25),
   price: z.number().positive({
     message: "Price must be a positive number",
   }),

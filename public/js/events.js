@@ -52,9 +52,10 @@ document.getElementById("search-form").addEventListener("submit", async (e) => {
       const product = await api.getProduct(searchId);
       productContainer.innerHTML = productCard(product);
     }
-    document.getElementById("searchInput").value = "";
   } catch (error) {
     showAlert(JSON.parse(error.message));
+  }finally{
+    document.getElementById("searchInput").value = "";
   }
 });
 
