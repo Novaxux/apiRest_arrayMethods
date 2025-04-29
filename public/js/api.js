@@ -114,6 +114,6 @@ class ApiCalls {
   };
 }
 
-export const api = new ApiCalls();
+export const api = new ApiCalls('127.0.0.1',3002);
 
 export { ApiCalls };

@@ -1,5 +1,5 @@
 const crypto = require("crypto");
-const pool = require("../models/product_model");
+const pool = require("../config/db");
 
 const getProducts = async (req, res) => {
   const [result] = await pool.query("SELECT * FROM products ORDER BY name ASC");
