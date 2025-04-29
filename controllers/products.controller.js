@@ -1,16 +1,14 @@
+const ProductModel = require("../models/productRepository");
+
 const crypto = require("crypto");
 const pool = require("../config/db");
 
 const getProducts = async (req, res) => {
-  const [result] = await pool.query("SELECT * FROM products ORDER BY name ASC");
+  const result = await ProductModel.selectAll();
   res.json(result);
 };
 const getProductById = async (req, res) => {
-  const productId = req.params.id;
-  const [product] = await pool.query(
-    `SELECT * FROM products WHERE id = ?`,
-    [productId]
-  );
+  const product = await ProductModel.selectById(req.params.id);
   if (product.length === 0) {
     return res.status(404).send();
   }
@@ -18,25 +16,15 @@ const getProductById = async (req, res) => {
 };
 
 const createProduct = async (req, res) => {
-  const productObject = { id: crypto.randomUUID(), ...req.validatedData };
-
-  await pool.query(
-    `INSERT INTO products (id, name, price, stock) VALUES (?, ?, ?, ?)`,
-    [
-      productObject.id,
-      productObject.name,
-      productObject.price,
-      productObject.stock,
-    ]
+  const productObject = await ProductModel.insert(
+    crypto.randomUUID(),
+    req.validatedData
   );
   res.status(201).send(productObject);
 };
 
 const deleteProduct = async (req, res) => {
-  const productId = req.params.id;
-  const [result] = await pool.query(`DELETE FROM products WHERE id = ?`, [
-    productId,
-  ]);
+  const result = await ProductModel.deleteById(req.params.id);
   if (result.affectedRows === 0) {
     return res.status(404).send();
   }
@@ -62,10 +50,7 @@ const updateProduct = async (req, res) => {
     });
   }
   const values = Object.values(data);
-  const [result] = await pool.query(
-    `UPDATE products SET ${fields} WHERE id = ?`,
-    [...values, id]
-  );
+  const result = await ProductModel.update(req.params.id, fields, values);
   if (result.affectedRows === 0) {
     return res.status(404).send();
   }
